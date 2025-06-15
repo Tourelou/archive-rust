@@ -2,14 +2,17 @@ use std::fs;
 use std::io::{self, BufRead};
 use std::path::{Path, PathBuf};
 
+use crate::locale::Strings;
+
 pub const ERREUR_RECHERCHE: i32 = 3;
 
 /// Recherche un pattern dans tous les fichiers .txt du dossier donné et imprime les résultats
-pub fn find_pattern(pattern: &str, search_path: &PathBuf) -> Result<i32, io::Error> {
+pub fn find_pattern(pattern: &str, search_path: &PathBuf, loc_arc: &Strings) -> Result<i32, io::Error> {
 	let pattern = pattern.to_lowercase();
 	
-	println!("{}\nRecherche du pattern: {}, Dans le dossier: {:?}\n{}",
-				"-".repeat(80), pattern, search_path, "-".repeat(80));
+	let info_message = loc_arc.info_find_dir.replace("{1}", &pattern)
+						.replace("{2}", &search_path.display().to_string());
+	println!("{}\n{info_message}\n{}",	"-".repeat(80), "-".repeat(80));
 
 	let mut entries: Vec<_> = fs::read_dir(&search_path)?
 		.filter_map(|entry| entry.ok()) // Ignore les erreurs de lecture
@@ -18,7 +21,8 @@ pub fn find_pattern(pattern: &str, search_path: &PathBuf) -> Result<i32, io::Err
 		.collect();
 
 	if entries.is_empty() {
-		eprint!("Le dossier '{}' ne contient\naucun fichier .txt pour effectuer la recherche.\n", search_path.display());
+		let no_txt_message = loc_arc.pas_fichier_txt.replace("{1}", &search_path.display().to_string());
+		eprint!("{no_txt_message}\n");
 		return Ok(ERREUR_RECHERCHE);
 	}
 	// Trie les fichiers et répertoires par ordre alphabétique
@@ -35,7 +39,8 @@ pub fn find_pattern(pattern: &str, search_path: &PathBuf) -> Result<i32, io::Err
 		}
 	}
 	if !any_match {
-		println!("Aucun fichier contenant le pattern '{}' n'a été trouvé.\n{}", pattern, "=".repeat(80));
+		let no_match_message = loc_arc.pas_trouve.replace("{1}", &pattern);
+		println!("{no_match_message}\n{}", "=".repeat(80));
 	}
 	Ok(0)
 }
