@@ -47,18 +47,26 @@ pub fn find_pattern(pattern: &str, search_path: &PathBuf, loc_arc: &Strings) -> 
 
 /// Recherche un pattern dans un fichier donné et affiche les correspondances
 /// Retourne `true` si au moins un match est trouvé, sinon `false`
-fn search_in_file(file_path: &Path, pattern: &String) -> io::Result<bool> {
+fn search_in_file(file_path: &Path, pattern: &str) -> io::Result<bool> {
 	let file = fs::File::open(file_path)?;
 	let reader = io::BufReader::new(file);
 	let mut found = false;
 
-	let basename = file_path.file_name().unwrap_or_else(|| file_path.as_os_str()).to_string_lossy();
-	for line in reader.lines() {
-		let line = line?.to_lowercase();
-		if line.contains(pattern) {
+	// On récupère le nom du fichier une seule fois
+	let basename = file_path
+		.file_name()
+		.map(|s| s.to_string_lossy())
+		.unwrap_or_else(|| file_path.as_os_str().to_string_lossy());
+
+	for line_result in reader.lines() {
+		let line = line_result?; // On extrait la String ici
+		
+		// On vérifie si le pattern est présent (insensible à la casse)
+		if line.to_lowercase().contains(&pattern.to_lowercase()) {
 			println!("{} <<== {}", basename, line);
 			found = true;
 		}
 	}
+
 	Ok(found)
 }

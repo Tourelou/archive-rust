@@ -9,7 +9,7 @@ use std::path::Path;
 use std::fs;
 
 const PRG_NAME: &str = "archive";
-const VERSION: &str = "2025-06-14";
+const VERSION: &str = "2025-12-21";
 
 const ERREUR_ARGUMENTS: i32 = 1; // Code pour les erreurs liées aux arguments Clap
 const ERREUR_DIR_NOT_EXIST: i32 = 2;
