@@ -4,12 +4,12 @@ use std::env;
 use std::fs::File;
 use std::path::{Path, PathBuf};
 
-use crate::locale::Strings;
+use crate::locale::ArchiveStrings;
 
 pub const ERREUR_SCAN: i32 = 4;
 
 /// Scan récursif d'un dossier et enregistrement dans le dossier d'archives
-pub fn scan_directory(scan_path: &String, archive_path: &PathBuf, loc_arc: &Strings) -> Result<i32, io::Error> {
+pub fn scan_directory(scan_path: &String, archive_path: &PathBuf, loc_arc: &ArchiveStrings) -> Result<i32, io::Error> {
 
 	let scan_dir = PathBuf::from(&scan_path);
 

@@ -2,12 +2,12 @@ use std::fs;
 use std::io::{self, BufRead};
 use std::path::{Path, PathBuf};
 
-use crate::locale::Strings;
+use crate::locale::ArchiveStrings;
 
 pub const ERREUR_RECHERCHE: i32 = 3;
 
 /// Recherche un pattern dans tous les fichiers .txt du dossier donné et imprime les résultats
-pub fn find_pattern(pattern: &str, search_path: &PathBuf, loc_arc: &Strings) -> Result<i32, io::Error> {
+pub fn find_pattern(pattern: &str, search_path: &PathBuf, loc_arc: &ArchiveStrings) -> Result<i32, io::Error> {
 	let pattern = pattern.to_lowercase();
 	
 	let info_message = loc_arc.info_find_dir.replace("{1}", &pattern)
