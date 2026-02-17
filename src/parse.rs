@@ -73,7 +73,7 @@ pub fn parse_args(data: &mut AppData) -> bool {
 					data.commande = Some(String::from("scan"));
 					index += 1;
 				} else {
-					data.mess_erreur = Some(data.locale.f_besoin_valeur.to_string());
+					data.mess_erreur = Some(data.locale.s_besoin_valeur.to_string());
 					return false;
 				}
 			}

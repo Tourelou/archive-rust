@@ -2,8 +2,6 @@
 
 use std::env;
 
-// #[derive(Debug)]
-#[allow(dead_code)]
 pub struct ArchiveStrings {
 	pub options: &'static str,
 	pub usage: &'static str,
@@ -126,7 +124,9 @@ pub fn get_app_lang() -> ArchiveStrings {
 
 	// Extraire uniquement le code de langue avant le premier '_'
 //	let lang_code = raw_lang.split('_').next().unwrap_or(&raw_lang);
-	let lang_strings = match raw_lang.split('_').next().unwrap_or(&raw_lang) {
+	let lang_strings = match raw_lang.split('_')
+									.next()
+									.unwrap_or(&raw_lang) {
 		"fr" => LANG_FR,
 		"es" => LANG_ES,
 		_ => LANG_EN,
