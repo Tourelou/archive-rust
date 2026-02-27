@@ -22,7 +22,7 @@ pub struct ArchiveStrings {
 	pub pas_trouve: &'static str,
 	pub err_cd_dir: &'static str,
 	pub info_scan_dir: &'static str,
-	pub err_cmd_find: &'static str,
+	pub err_write_file: &'static str,
 	pub message_final: &'static str,
 }
 
@@ -64,7 +64,7 @@ pub const LANG_FR: ArchiveStrings = ArchiveStrings {
 	pas_trouve: "Aucun fichier contenant le motif '{1}' n'a été trouvé.",
 	err_cd_dir: "Erreur: Impossible de changer de répertoire",
 	info_scan_dir: "Scan des fichiers du répertoire:",
-	err_cmd_find: "Erreur lors de l'exécution de la commande find",
+	err_write_file: "Erreur lors de l'exécution de la commande find",
 	message_final:"Scan terminé ! Résultats enregistrés dans"
 };
 
@@ -88,7 +88,7 @@ pub const LANG_EN: ArchiveStrings = ArchiveStrings {
 	pas_trouve: "No file with the pattern '{1}' was found.",
 	err_cd_dir: "Error: Unable to change directory",
 	info_scan_dir: "Scanning files in directory:",
-	err_cmd_find: "Error executing find command",
+	err_write_file: "Error executing find command",
 	message_final: "Scan completed ! Results saved in",
 };
 
@@ -112,7 +112,7 @@ pub const LANG_ES: ArchiveStrings = ArchiveStrings {
 	pas_trouve: "No se encontró ningún archivo con el patrón '{1}'.",
 	err_cd_dir: "Error: No se puede cambiar de directorio",
 	info_scan_dir: "Escaneando archivos en el directorio:",
-	err_cmd_find: "Error al ejecutar el comando find",
+	err_write_file: "Error al ejecutar el comando find",
 	message_final: "¡Escaneo completado! Resultados guardados en",
 };
 

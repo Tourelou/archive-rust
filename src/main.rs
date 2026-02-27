@@ -11,7 +11,7 @@ use std::path::Path;
 use std::fs;
 
 const PRG_NAME: &str = "archive";
-const VERSION: &str = "2026-02-17";
+const VERSION: &str = "2026-02-26";
 
 //#[derive(Debug)]
 pub struct AppData {
