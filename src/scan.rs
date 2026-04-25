@@ -1,4 +1,5 @@
-//use std::process::Command;
+// scan.rs
+
 use std::io;
 use std::env;
 use std::fs;
@@ -9,6 +10,7 @@ use crate::locale::ArchiveStrings;
 pub const ERREUR_SCAN: i32 = 4;
 
 /// Scanne récursivement et remplit le vecteur
+/*
 fn scanner(dir: &Path, accumulation: &mut Vec<PathBuf>, loc: &ArchiveStrings) {
 	match fs::read_dir(dir) {
 		Ok(entries) => {
@@ -26,7 +28,28 @@ fn scanner(dir: &Path, accumulation: &mut Vec<PathBuf>, loc: &ArchiveStrings) {
 		}
 	}
 }
+*/
 
+/// Scanne récursivement et remplit le vecteur
+fn scanner(dir: &Path, accumulation: &mut Vec<PathBuf>, loc: &ArchiveStrings) {
+	match fs::read_dir(dir) {
+		Ok(entries) => {
+			for entry in entries.flatten() {
+				let path = entry.path();
+				if path.is_dir() { scanner(&path, accumulation, loc); }
+				else { accumulation.push(path); }
+			}
+		}
+		Err(e) => {
+			// On affiche l'erreur sur la sortie d'erreur standard (stderr)
+			eprintln!("{} {}", loc.err_scan_dir.replace("{1}", &ERREUR_SCAN.to_string())
+												.replace("{2}", &dir.display().to_string())
+												.replace("{3}", &e.to_string()), dir.display());
+		}
+	}
+}
+
+/*
 /// Scan récursif d'un dossier et enregistrement dans le dossier d'archives
 pub fn scan_directory(scan_path: &String, archive_path: &PathBuf, loc_arc: &ArchiveStrings) -> Result<i32, io::Error> {
 
@@ -63,4 +86,45 @@ pub fn scan_directory(scan_path: &String, archive_path: &PathBuf, loc_arc: &Arch
 
 	println!("{} '{}'\n{}", loc_arc.message_final, output_file.display(),"-".repeat(80));
 	return Ok(0);
+}
+*/
+
+/// Scan récursif d'un dossier et enregistrement dans le dossier d'archives
+pub fn scan_directory(scan_path: &String, archive_path: &PathBuf, loc_arc: &ArchiveStrings) -> Result<i32, io::Error> {
+	let scan_dir = PathBuf::from(scan_path);
+
+	// Nom du fichier = nom du dossier scanné + .txt
+	let dir_name = scan_dir.file_name().unwrap_or_else(|| scan_dir.as_os_str()).to_string_lossy();
+	let output_file = archive_path.join(format!("{}.txt", dir_name));
+
+	// Changement de répertoire
+	if let Err(e) = env::set_current_dir(Path::new(scan_path)) {
+		eprintln!("{} {}", loc_arc.err_cd_dir, e);
+		return Ok(ERREUR_SCAN);
+	}
+
+	println!("{}\n{} {}\n{}", "-".repeat(80), loc_arc.info_scan_dir, scan_path, "-".repeat(80));
+
+	// 1. Récupération des fichiers
+	let mut liste = Vec::new();
+	scanner(Path::new("."), &mut liste, loc_arc);
+	liste.sort();
+
+	// 2. TRANSFORMATION : Construction de la String avec saut de ligne final
+	// On pré-alloue un peu de mémoire pour l'efficacité
+	let mut contenu = String::with_capacity(liste.len() * 50); 
+	for path in liste.iter().filter_map(|p| p.to_str()) {
+		contenu.push_str(path);
+		contenu.push('\n'); // Ajoute un \n après CHAQUE ligne, y compris la dernière
+	}
+
+	// 3. ÉCRITURE UNIQUE
+	fs::write(&output_file, contenu).map_err(|e| {
+		eprintln!("{} {:?} : {}", loc_arc.err_write_file, output_file, e);
+		e
+	})?;
+
+	println!("{} '{}'\n{}", loc_arc.message_final, output_file.display(), "-".repeat(80));
+
+	Ok(0)
 }
